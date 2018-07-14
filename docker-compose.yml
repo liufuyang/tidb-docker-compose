@@ -148,7 +148,38 @@ services:
     depends_on:
       - tispark-master
     restart: on-failure
-
+  tispark-slave1:
+    image: pingcap/tispark:latest
+    command:
+      - /opt/spark/sbin/start-slave.sh
+      - spark://tispark-master:7077
+    volumes:
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+    environment:
+      SPARK_WORKER_WEBUI_PORT: 38082
+    ports:
+      - "38082:38082"
+    depends_on:
+      - tispark-master
+    restart: on-failure
+  
+  tispark-notebook:
+    image: pingcap/tispark-notebook:latest
+    build: tispark-notebook
+    volumes:
+      - ./notebook:/home/tispark/notebook
+      - ./config/spark-defaults.conf:/usr/lib/python2.7/site-packages/pyspark/conf/spark-defaults.conf:ro
+    environment:
+      SPARK_DRIVER_MEMORY: 6G
+      SPARK_EXECUTOR_MEMORY: 6G
+      SPARK_EXECUTOR_CORES: 3
+      MASTER: spark://tispark-master:7077
+    ports:
+      - "4445:4445"
+    depends_on:
+      - "tispark-master"
+    restart: on-failure
+  
   tidb-vision:
     image: pingcap/tidb-vision:latest
     environment:
