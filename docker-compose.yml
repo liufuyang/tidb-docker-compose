@@ -148,6 +148,20 @@ services:
     depends_on:
       - tispark-master
     restart: on-failure
+  tispark-slave1:
+    image: pingcap/tispark:latest
+    command:
+      - /opt/spark/sbin/start-slave.sh
+      - spark://tispark-master:7077
+    volumes:
+      - ./config/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+    environment:
+      SPARK_WORKER_WEBUI_PORT: 38082
+    ports:
+      - "38082:38082"
+    depends_on:
+      - tispark-master
+    restart: on-failure
 
   tidb-vision:
     image: pingcap/tidb-vision:latest
