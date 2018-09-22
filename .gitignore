@@ -11,3 +11,5 @@
 /docker/dashboard_installer/dashboard/tidb.json
 /docker/dashboard_installer/dashboard/tikv.json
 /.idea
+/notebook/metastore_db
+/notebook/derby.log
